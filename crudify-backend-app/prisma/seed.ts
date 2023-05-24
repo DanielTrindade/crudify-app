@@ -1,37 +1,44 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
+const roundsOfHashing = 10;
 async function main() {
+  const password1 = await bcrypt.hash('admin123', roundsOfHashing);
+  const password2 = await bcrypt.hash('daniel123', roundsOfHashing);
+  const password3 = await bcrypt.hash('joao123', roundsOfHashing);
   const user1 = await prisma.user.upsert({
     where: { email: 'admin.root@email.com' },
-    update: {},
+    update: {
+      password: password1,
+    },
     create: {
       name: 'admin',
       email: 'admin.root@email.com',
-      password: 'admin',
+      password: password1,
     },
   });
   const user2 = await prisma.user.upsert({
     where: { email: 'daniel.trindade@email.com' },
-    update: {},
+    update: { password: password2 },
     create: {
       name: 'Daniel de Oliveira Trindade',
       email: 'daniel.trindade@email.com',
-      password: 'daniel123',
+      password: password2,
     },
   });
   const user3 = await prisma.user.upsert({
     where: { email: 'joao.silva@email.com' },
-    update: {},
+    update: { password: password3 },
     create: {
       name: 'João da Silva',
       email: 'joao.silva@email.com',
-      password: 'joao13',
+      password: password3,
     },
   });
 
   const product1 = await prisma.product.upsert({
-    where: { id: 1 },
+    where: { name: 'feijão B' },
     update: {},
     create: {
       name: 'feijão B',
@@ -42,7 +49,7 @@ async function main() {
     },
   });
   const product2 = await prisma.product.upsert({
-    where: { id: 2 },
+    where: { name: 'arroz B' },
     update: {},
     create: {
       name: 'arroz B',
@@ -53,7 +60,7 @@ async function main() {
     },
   });
   const product3 = await prisma.product.upsert({
-    where: { id: 3 },
+    where: { name: 'macarrão' },
     update: {},
     create: {
       name: 'macarrão',
