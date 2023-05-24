@@ -1,19 +1,43 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Decimal } from '@prisma/client/runtime';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsNumber,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+//fazer a verificação do campo name por ser unique
 
 export class CreateProductDto {
-  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(20)
+  @MinLength(3)
+  @ApiProperty({ required: true })
   name: string;
-  @ApiProperty()
-  description: string;
-  @ApiProperty()
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  @MaxLength(30)
+  @ApiProperty({ required: false })
+  description: string | null;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({ type: 'number', format: 'float', required: true })
   price: number;
-  @ApiProperty()
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({ required: true })
   quantity: number;
-  @ApiProperty()
+
+  @IsNotEmpty()
+  @ApiProperty({ default: new Date() })
   createdAt: Date;
-  @ApiProperty()
-  updatedAt: '';
-  @ApiProperty()
-  deletedAt: '';
+  @IsNotEmpty()
+  @ApiProperty({ required: true, nullable: true })
+  userId: number;
 }

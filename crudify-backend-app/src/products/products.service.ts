@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
   create(createProductDto: CreateProductDto) {
+    console.log(createProductDto);
     return this.prisma.product.create({ data: createProductDto });
   }
 
@@ -20,7 +21,7 @@ export class ProductsService {
   update(id: number, updateProductDto: UpdateProductDto) {
     return this.prisma.product.update({
       where: { id },
-      data: UpdateProductDto,
+      data: updateProductDto,
     });
   }
 

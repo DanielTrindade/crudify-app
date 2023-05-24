@@ -7,7 +7,7 @@ export class ProductEntity implements Product {
   name: string;
   @ApiProperty()
   description: string;
-  @ApiProperty()
+  @ApiProperty({ type: 'number', format: 'float' })
   price: number;
   @ApiProperty()
   quantity: number;
@@ -17,4 +17,6 @@ export class ProductEntity implements Product {
   updatedAt: Date;
   @ApiProperty()
   deletedAt: Date;
+  @ApiProperty()
+  userId: number;
 }
