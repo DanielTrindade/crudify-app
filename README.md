@@ -1,5 +1,6 @@
 # Crudify-app
-Uma aplicação que utiliza o framework NestJS no backend e o framework NextJS no frontend. O NestJS é uma estrutura de desenvolvimento de aplicativos em Node.js que oferece recursos para construir APIs e serviços robustos. Já o NextJS é um framework de React que facilita a criação de aplicativos web do lado do cliente, com recursos como renderização do lado do servidor e pré-renderização estática. Ao combinar o NestJS no backend e o NextJS no frontend, é possível desenvolver uma aplicação completa, escalável e eficiente, com uma arquitetura moderna e com bom desempenho.
+
+Uma aplicação que implementa um CRUD com sistema de login,que utiliza o framework NestJS no backend e o framework NextJS no frontend. O NestJS é uma estrutura de desenvolvimento de aplicativos em Node.js que oferece recursos para construir APIs e serviços robustos. Já o NextJS é um framework de React que facilita a criação de aplicativos web do lado do cliente, com recursos como renderização do lado do servidor e pré-renderização estática. Ao combinar o NestJS no backend e o NextJS no frontend, é possível desenvolver uma aplicação completa, escalável e eficiente, com uma arquitetura moderna e com bom desempenho.
 
 ## Documentação da API
 
