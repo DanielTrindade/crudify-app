@@ -42,3 +42,11 @@ Para configurar e roda o backend da aplicação siga os passos a seguir:
 4. Inicie o servidor de desenvolvimento:
    ```bash
    npm run start:dev
+### Executando frontend da aplicação:
+1. Dentro do frontend instale as dependências:
+   ```base
+   npm install
+2. Depois rode o comando para iniciar o sevidor de desenvolvimento:
+   ```base
+   npm run dev
+
