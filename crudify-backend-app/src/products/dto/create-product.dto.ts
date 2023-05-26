@@ -26,7 +26,7 @@ export class CreateProductDto {
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty({ type: 'number', format: 'float', required: true })
+  @ApiProperty({ format: 'float', required: true })
   price: number;
 
   @IsNumber()

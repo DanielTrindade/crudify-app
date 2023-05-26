@@ -6,10 +6,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
   create(createProductDto: CreateProductDto) {
-    console.log(createProductDto);
+    createProductDto.price = parseFloat(createProductDto.price.toString());
+    createProductDto.quantity = parseInt(createProductDto.quantity.toString());
     return this.prisma.product.create({ data: createProductDto });
   }
-
   findAll() {
     return this.prisma.product.findMany();
   }

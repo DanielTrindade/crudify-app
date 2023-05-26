@@ -11,18 +11,43 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
   async login(email: string, password: string): Promise<AuthEntity> {
-    const user = await this.prisma.user.findUnique({ where: { email: email } });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email: email },
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
 
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid password');
-    }
+      const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    return {
-      accessToken: this.jwtService.sign({ userId: user.id }),
-    };
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Invalid password');
+      }
+
+      return {
+        accessToken: this.jwtService.sign({ userId: user.id }),
+        userId: user.id,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        // Tratar a exceção de usuário não encontrado
+        return {
+          accessToken: '',
+          userId: 0,
+        };
+      } else if (error instanceof UnauthorizedException) {
+        return {
+          accessToken: '',
+          userId: 0,
+        };
+      } else {
+        // Tratar outros erros
+        return {
+          accessToken: '',
+          userId: 0,
+        };
+      }
+    }
   }
 }

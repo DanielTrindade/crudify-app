@@ -7,10 +7,12 @@ import {
   IsEmail,
 } from 'class-validator';
 
+import { IsEmailUnique } from 'src/decorators/IsEmailUnique.decorator';
+
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(20)
+  @MaxLength(50)
   @MinLength(3)
   @ApiProperty({ required: true })
   name: string;
@@ -18,6 +20,7 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @IsEmail()
+  @IsEmailUnique({ message: 'E-mail já cadastrado' })
   @ApiProperty({ required: true })
   email: string;
 
@@ -26,7 +29,6 @@ export class CreateUserDto {
   @ApiProperty({ required: true })
   password: string;
 
-  @IsNotEmpty()
   @ApiProperty({ default: new Date() })
   createdAt: Date;
 
