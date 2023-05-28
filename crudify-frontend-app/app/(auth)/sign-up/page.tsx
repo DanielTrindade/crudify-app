@@ -43,7 +43,9 @@ const Signup = () => {
     console.log(data);
   };
 
-  const handleConfirmPassword = (value: string | undefined): string | undefined => {
+  const handleConfirmPassword = (
+    value: string | undefined
+  ): string | undefined => {
     if (value !== getValues("password")) {
       return "As senhas não coincidem.";
     }
@@ -149,12 +151,21 @@ const Signup = () => {
               </p>
             )}
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600"
-          >
-            Entrar
-          </button>
+          <div className="flex">
+            <button
+              type="submit"
+              className="flex-1 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 mr-2"
+            >
+              Cadastrar
+            </button>
+            <button
+              type="button"
+              className="flex-1 bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-600"
+              onClick={() => router.push("/login")}
+            >
+              Voltar
+            </button>
+          </div>
         </form>
       </div>
     </div>
