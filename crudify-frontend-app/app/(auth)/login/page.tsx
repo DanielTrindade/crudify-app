@@ -22,7 +22,7 @@ const Login = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/auth/login",
+        "http://localhost:3000/auth/login", 
         data
       );
       if (response.status === 201 && response?.data?.accessToken !== "") {

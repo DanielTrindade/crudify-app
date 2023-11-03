@@ -95,7 +95,6 @@ const Products = () => {
 
   const updateProduct = async (product: FormValues) => {
     try {
-      console.log(product);
       const token = localStorage.getItem("accessToken");
       const axiosInstance = axios.create({
         baseURL: "http://localhost:3000",
@@ -110,9 +109,9 @@ const Products = () => {
         updatedAt: new Date(),
       };
 
-      // Faça a requisição PUT para atualizar o produto no servidor
-      const response = await axiosInstance.put(
-        `/products/${product.id}`,
+      // Faça a requisição PATCH para atualizar o produto no servidor
+      const response = await axiosInstance.patch(
+        `/products/${selectedProduct?.id}`,
         updatedProduct
       );
 
@@ -160,7 +159,7 @@ const Products = () => {
   };
 
   const openEditModal = (product: Product) => {
-    setSelectedProduct(product);
+    setSelectedProduct({...product});
     setIsEditModalOpen(true);
   };
 
@@ -329,7 +328,7 @@ const Products = () => {
                     </button>
                     <button
                       className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 mr-2"
-                      onClick={() => openEditModal(product)}
+                      onClick={() => openEditModal({...product})}
                     >
                       Editar
                     </button>
@@ -383,6 +382,7 @@ const Products = () => {
                               Nome
                             </label>
                             <input
+                              {...register("name", {required: false})}
                               type="text"
                               id="name"
                               className="w-full border-gray-300 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -397,6 +397,7 @@ const Products = () => {
                               Descrição
                             </label>
                             <textarea
+                              {...register("description", {required: false})}
                               id="description"
                               className="w-full border-gray-300 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                               defaultValue={selectedProduct.description}
@@ -410,6 +411,7 @@ const Products = () => {
                               Preço
                             </label>
                             <input
+                              {...register("price", {required: false})}
                               type="number"
                               id="price"
                               className="w-full border-gray-300 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -425,6 +427,7 @@ const Products = () => {
                               Quantidade
                             </label>
                             <input
+                              {...register("quantity", {required: false})}
                               type="number"
                               id="quantity"
                               className="w-full border-gray-300 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -441,6 +444,7 @@ const Products = () => {
                             </button>
                             <button
                               className="bg-gray-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600"
+                              type="button"
                               onClick={closeModals}
                             >
                               Cancelar

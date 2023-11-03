@@ -57,6 +57,7 @@ export class ProductsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: UpdateProductDto,
   ) {
+    updateProductDto.price = +updateProductDto.price;
     return this.productsService.update(+id, updateProductDto);
   }
 
