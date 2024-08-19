@@ -54,7 +54,7 @@ export class UsersController {
   @ApiOkResponse({ type: UserEntity })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDto
   ) {
     return new UserEntity(await this.usersService.update(+id, updateUserDto));
   }
