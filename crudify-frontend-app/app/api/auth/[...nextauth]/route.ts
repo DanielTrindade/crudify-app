@@ -4,12 +4,13 @@ import CredentialsProvider from "next-auth/providers/credentials"
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
+      id: 'credentials',
       name: 'Credentials',
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -19,7 +20,6 @@ export const authOptions: NextAuthOptions = {
           body: JSON.stringify(credentials),
           headers: { "Content-Type": "application/json" }
         })
-        console.log('res => ', res);
 
         const user = await res.json()
 
@@ -33,11 +33,52 @@ export const authOptions: NextAuthOptions = {
         }
         return null
       }
+    }),
+    CredentialsProvider({
+      id: 'signup',
+      name: 'Signup',
+      credentials: {
+        name: { label: "Name", type: "text" },
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials, req) {
+        if (!credentials?.name || !credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const res = await fetch("http://localhost:3000/users", {
+          method: 'POST',
+          body: JSON.stringify(credentials),
+          headers: { "Content-Type": "application/json" }
+        })
+        
+        const user = await res.json()
+
+        if (res.ok && user) {
+          const loginRes = await fetch("http://localhost:3000/auth/login", {
+            method: 'POST',
+            body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+            headers: { "Content-Type": "application/json" }
+          })
+
+          const loginUser = await loginRes.json()
+
+          if (loginRes.ok && loginUser && loginUser.accessToken) {
+            return {
+              id: loginUser.userId,
+              email: credentials.email,
+              accessToken: loginUser.accessToken,
+              userId: loginUser.userId
+            }
+          }
+        }
+        return null
+      }
     })
   ],
   callbacks: {
     async jwt({ token, user }) {
-      console.log('jwt', token, user)
       if (user) {
         token.accessToken = user.accessToken;
         token.userId = user.userId;
@@ -52,6 +93,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/login',
+    newUser: '/signup',
   },
 }
 
