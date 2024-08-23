@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import ProductList from './ProductList';
 import ProductForm from './ProductForm';
 import ProductService from '@/services/productService';

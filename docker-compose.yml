@@ -1,0 +1,61 @@
+version: '3.8'
+services:
+
+  postgres:
+    image: postgres:13.5
+    restart: always
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  backend:
+    build:
+      context: ./crudify-backend-app
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://myuser:mypassword@postgres:5432/crudify-db
+      JWT_SECRET_KEY: zjP9h6ZI5LoSKCRj
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    command: >
+      sh -c "
+        npm run prisma:migrate &&
+        npm run prisma:seed &&
+        npm run start:prod
+      "
+  frontend:
+    build:
+      context: ./crudify-frontend-app
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:3000
+      - PORT=3001
+      - NEXTAUTH_URL=http://localhost:3001
+    depends_on:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+volumes:
+  postgres:
