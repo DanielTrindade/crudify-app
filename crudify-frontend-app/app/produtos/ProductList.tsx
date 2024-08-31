@@ -1,14 +1,14 @@
 "use client"
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import ProductService, { Product } from "@/services/productService";
+import ProductService, { type Product } from "@/services/productService";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function ProductList({ initialProducts }: { initialProducts: Product[] }) {
+export default function ProductList({ initialProducts }: { initialProducts: Product[] | undefined }) {
   const { data: session } = useSession();
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[] | undefined>(initialProducts);
   const [error, setError] = useState<string | null>(null);
 
   const deleteProduct = async (productId: number) => {
@@ -19,7 +19,7 @@ export default function ProductList({ initialProducts }: { initialProducts: Prod
       const productService = new ProductService(session.accessToken);
       await productService.deleteProduct(productId);
       setProducts((prevProducts) =>
-        prevProducts.filter((product) => product.id !== productId)
+        prevProducts?.filter((product) => product.id !== productId)
       );
       setError(null);
     } catch (error) {
@@ -35,7 +35,7 @@ export default function ProductList({ initialProducts }: { initialProducts: Prod
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      {products.length > 0 ? (
+      {(products?.length ?? 0) > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -47,7 +47,7 @@ export default function ProductList({ initialProducts }: { initialProducts: Prod
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {products?.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.description}</TableCell>

@@ -53,12 +53,13 @@ export default function ProductForm() {
   });
 
   const createProduct = async (data: ProductFormValues) => {
+    console.log('createProduct:', data);
     try {
       if (!session?.accessToken) {
         throw new Error("Not authenticated");
       }
 
-      const userId = session.userId ? parseInt(session.userId as string, 10) : null;
+      const userId = session.userId ? parseInt(session.userId, 10) : null;
       
       if (userId === null) {
         throw new Error("User ID is missing");

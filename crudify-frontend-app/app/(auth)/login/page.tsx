@@ -71,7 +71,7 @@ const Login = () => {
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle>Login titulo</CardTitle>
           <CardDescription>Faça login para acessar sua conta</CardDescription>
         </CardHeader>
         <CardContent>
