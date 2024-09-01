@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 const roundsOfHashing = 10;
@@ -70,7 +70,6 @@ async function main() {
       userId: user3.id,
     },
   });
-  console.log({ user1, user2, user3, product1, product2, product3 });
 }
 
 main()

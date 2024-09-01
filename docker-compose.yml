@@ -1,0 +1,97 @@
+services:
+  portainer:
+    container_name: dev_crudify_portainer
+    image: portainer/portainer-ce:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9000:9000
+    restart: unless-stopped
+    networks:
+      - dev_crudify_proxy
+
+  postgres:
+    container_name: dev_crudify_postgres
+    image: postgres:14.5
+    hostname: postgres
+    restart: always
+    env_file:
+      - ./crudify-backend-app/.env
+    environment:
+      POSTGRES_USER: "myuser"
+      POSTGRES_PASSWORD: "mypassword"
+      POSTGRES_DB: "crudify-db"
+      PGDATA: /var/lib/postgresql/data
+      TZ: "GMT+4"
+      PGTZ: "GMT+4"
+    healthcheck:
+      test: "pg_isready --dbname=crudify-db --username=myuser && psql --username=myuser --dbname=crudify-db --list"
+      timeout: 10s
+      retries: 20
+    volumes:
+      - dev_crudify_postgres_data:/var/lib/postgresql/data
+    networks:
+      - dev_crudify_proxy
+  
+  pgadmin:
+    container_name: dev_crudify_pgadmin
+    image: dpage/pgadmin4:latest
+    env_file:
+      - ./crudify-backend-app/.env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - dev_crudify_pgadmin_data:/var/lib/pgadmin
+    ports:
+      - 16543:80
+    depends_on:
+      - postgres
+    networks:
+      - dev_crudify_proxy
+
+  backend:
+    container_name: dev_crudify_backend
+    restart: always
+    build:
+      context: ./crudify-backend-app
+      dockerfile: Dockerfile
+    env_file:
+      - ./crudify-backend-app/.env
+    environment:
+      - NODE_ENV=development
+      - WAIT_HOSTS=postgres:5432
+    volumes:
+      - "./crudify-backend-app:/home/node/app:rw"
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "npm install --legacy-peer-deps && chmod 777 -R ./node_modules && npm run prisma:migrate &&
+        npm run prisma:seed && npm run start:dev"
+    networks:
+      - dev_crudify_proxy
+
+  frontend:
+    container_name: dev_crudify_frontend
+    restart: always
+    build:
+      context: ./crudify-frontend-app
+      dockerfile: Dockerfile
+    volumes:
+      - "./crudify-frontend-app:/home/node/app:rw"
+    ports:
+      - "3001:3001"
+    environment:
+      - WATCHPACK_POLLING=true
+    command: sh -c "npm install --force && chmod 777 -R ./node_modules && npm run dev"
+    networks:
+      - dev_crudify_proxy
+networks:
+  dev_crudify_proxy:
+    driver: bridge
+    name: dev_crudify
+volumes:
+  dev_crudify_postgres_data:
+  dev_crudify_pgadmin_data:

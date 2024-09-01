@@ -7,7 +7,7 @@ import {
   IsEmail,
 } from 'class-validator';
 
-import { IsEmailUnique } from 'src/decorators/IsEmailUnique.decorator';
+import { IsEmailAlreadyExist } from 'src/decorators/UsersDecorators/IsEmailAlreadyExist/is-email-already-exist.decorator';
 
 export class CreateUserDto {
   @IsString()
@@ -20,7 +20,7 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @IsEmail()
-  @IsEmailUnique({ message: 'E-mail já cadastrado' })
+  @IsEmailAlreadyExist()
   @ApiProperty({ required: true })
   email: string;
 

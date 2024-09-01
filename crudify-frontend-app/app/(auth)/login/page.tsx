@@ -30,6 +30,7 @@ const formSchema = z.object({
 const Login = () => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,20 +41,29 @@ const Login = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+    setError(null);
+
     try {
       const result = await signIn("credentials", {
         redirect: false,
         email: values.email,
         password: values.password,
+        callbackUrl: "/produtos",
       });
-      console.log(result);
+
       if (result?.error) {
         setError("Credenciais inválidas. Por favor, tente novamente.");
-      } else if (result?.ok) {
-        router.push("/produtos");
+      } else if (result?.url) {
+        router.replace(result.url);
+      } else {
+        setError("Ocorreu um erro inesperado. Por favor, tente novamente.");
       }
     } catch (error) {
+      console.error("Erro durante o login:", error);
       setError("Ocorreu um erro durante o login. Por favor, tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,7 +71,7 @@ const Login = () => {
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle>Login titulo</CardTitle>
           <CardDescription>Faça login para acessar sua conta</CardDescription>
         </CardHeader>
         <CardContent>
