@@ -1,3 +1,4 @@
+"use client";
 import { Suspense } from "react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
@@ -16,14 +17,14 @@ async function getProducts(accessToken: string) {
 	}
 }
 
-export default async function ProductsPage() {
+export default function ProductsPage() {
 	const session = useSession();
 
 	if (!session || !session.data?.accessToken) {
 		return <div>Por favor, faça login para visualizar esta página.</div>;
 	}
 
-	const initialProducts = await getProducts(session.data?.accessToken);
+	const initialProducts =  getProducts(session.data?.accessToken);
 	if (initialProducts === null) {
 		return <div>Erro ao carregar produtos.pq sim pq</div>;
 	}

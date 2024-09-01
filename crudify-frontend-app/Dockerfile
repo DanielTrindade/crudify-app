@@ -1,22 +1,14 @@
-FROM node:18
+FROM node:18-alpine AS build
 
-WORKDIR /app
+WORKDIR /home/node/app
 
-# Copiar arquivos de dependências
 COPY package*.json ./
 
-# Limpar cache e instalar dependências
+RUN chmod -R 777 /home/node/app
 RUN npm cache clean --force
-RUN npm install
-
-# Copiar o resto dos arquivos do projeto
-COPY . .
-
-
-# Construir a aplicação
-RUN npm run build
+RUN npm install --force
 
 EXPOSE 3001
 
 # Comando para iniciar a aplicação em modo de produção
-CMD ["npm", "start"]
+#CMD ["npm", "start", "dev"]
