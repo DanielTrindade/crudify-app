@@ -22,13 +22,13 @@ const productSchema = z.object({
   name: z.string().min(1, "O nome do produto é obrigatório."),
   description: z.string().min(1, "A descrição do produto é obrigatória."),
   price: z.string().refine(
-    (value) => !isNaN(parseFloat(value)) && parseFloat(value) > 0,
+    (value) => !Number.isNaN(Number.parseFloat(value)) && Number.parseFloat(value) > 0,
     {
       message: "O preço deve ser um número positivo.",
     }
   ),
   quantity: z.string().refine(
-    (value) => !isNaN(parseInt(value)) && parseInt(value) > 0,
+    (value) => !Number.isNaN(Number.parseInt(value)) && Number.parseInt(value) > 0,
     {
       message: "A quantidade deve ser um número inteiro positivo.",
     }
@@ -38,7 +38,7 @@ const productSchema = z.object({
 
 type ProductFormValues = z.infer<typeof productSchema>;
 
-export default function ProductForm() {
+export function ProductForm() {
   const { data: session } = useSession();
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +59,7 @@ export default function ProductForm() {
         throw new Error("Not authenticated");
       }
 
-      const userId = session.userId ? parseInt(session.userId, 10) : null;
+      const userId = session.userId ? Number.parseInt(session.userId, 10) : null;
       
       if (userId === null) {
         throw new Error("User ID is missing");
@@ -68,8 +68,8 @@ export default function ProductForm() {
       const productService = new ProductService(session.accessToken);
       await productService.createProduct({
         ...data,
-        price: parseFloat(data.price),
-        quantity: parseInt(data.quantity, 10),
+        price: Number.parseFloat(data.price),
+        quantity: Number.parseInt(data.quantity, 10),
         userId: userId,
         createdAt: new Date().toISOString(),
       });

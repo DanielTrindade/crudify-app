@@ -1,61 +1,32 @@
-"use client";
-import { Suspense } from "react";
+// ProductsPage.tsx (Server Component)
+import { redirect } from 'next/navigation';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
-import ProductList from "./ProductList";
-import ProductForm from "./ProductForm";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ProductService from "@/services/productService";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { useSession } from "next-auth/react";
-async function getProducts(accessToken: string) {
-	const productService = new ProductService(accessToken);
-	try {
-		return await productService.fetchProducts();
-	} catch (error) {
-		console.error("Error fetching products:", error);
-		return null;
-	}
+import {ProductsClient} from './ProductClient';
+
+async function getProducts(accessToken: string | undefined) {
+    if (!accessToken) return [];
+    const productService = new ProductService(accessToken);
+    try {
+        const products = await productService.fetchProducts();
+        return products || [];
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        return [];
+    }
 }
 
-export default function ProductsPage() {
-	const session = useSession();
+export default async function ProductsPage() {
+    const session = await getServerSession(authOptions);
 
-	if (!session || !session.data?.accessToken) {
-		return <div>Por favor, faça login para visualizar esta página.</div>;
-	}
+    if (!session || !session.accessToken) {
+        redirect('/login');
+    }
 
-	const initialProducts =  getProducts(session.data?.accessToken);
-	if (initialProducts === null) {
-		return <div>Erro ao carregar produtos.pq sim pq</div>;
-	}
+    const initialProducts = await getProducts(session.accessToken);
 
-	return (
-		<div className="bg-gray-100 dark:bg-gray-900 min-h-screen p-8">
-			<div className="max-w-4xl mx-auto">
-				<h1 className="text-3xl font-bold mb-8">CRUD de Produtos</h1>
-
-				<Suspense fallback={<div>Carregando formulário...</div>}>
-					<Card className="mb-8">
-						<CardHeader>
-							<CardTitle>Adicionar Novo Produto</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<ProductForm />
-						</CardContent>
-					</Card>
-				</Suspense>
-
-				<Suspense fallback={<div>Carregando produtos...</div>}>
-					<Card>
-						<CardHeader>
-							<CardTitle>Lista de Produtos</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<ProductList initialProducts={initialProducts} />
-						</CardContent>
-					</Card>
-				</Suspense>
-			</div>
-		</div>
-	);
+    return (
+        <ProductsClient initialProducts={initialProducts} />
+    );
 }

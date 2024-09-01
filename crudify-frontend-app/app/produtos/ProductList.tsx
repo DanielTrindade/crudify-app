@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function ProductList({ initialProducts }: { initialProducts: Product[] | undefined }) {
+export function ProductList({ initialProducts }: { initialProducts: Product[] | undefined }) {
   const { data: session } = useSession();
   const [products, setProducts] = useState<Product[] | undefined>(initialProducts);
   const [error, setError] = useState<string | null>(null);
