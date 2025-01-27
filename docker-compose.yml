@@ -61,8 +61,9 @@ services:
     environment:
       - NODE_ENV=development
       - WAIT_HOSTS=postgres:5432
+      - CHOKIDAR_USEPOLLING=true
     volumes:
-      - "./crudify-backend-app:/home/node/app:rw"
+      - ./crudify-backend-app:/home/node/app/
     ports:
       - "3000:3000"
     depends_on:
@@ -80,7 +81,7 @@ services:
       context: ./crudify-frontend-app
       dockerfile: Dockerfile
     volumes:
-      - "./crudify-frontend-app:/home/node/app:rw"
+      - ./crudify-frontend-app:/home/node/app
     ports:
       - "3001:3001"
     environment:

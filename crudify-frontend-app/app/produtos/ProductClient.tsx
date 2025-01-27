@@ -1,4 +1,3 @@
-// ProductsClient.tsx (Client Component)
 'use client';
 
 import { useSession } from "next-auth/react";
@@ -7,22 +6,38 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import {ProductForm} from './ProductForm';
 import {ProductList} from './ProductList';
 import LoadingSpinner from '@/components/ui/loading';
-
-interface ProductsClientProps {
-    initialProducts: any[];
+//lembrar de centralizar a interface para o tipo de produto desse modo 
+//não tá legal ainda
+interface Product {
+    userId: number;
+	id: number;
+	name: string;
+	description: string;
+	price: number;
+	quantity: number;
+	createdAt: string;
 }
+  
+interface ProductsClientProps {
+initialProducts: Product[]; 
+}
+  
 
 export function ProductsClient({ initialProducts }: ProductsClientProps) {
     const { data: session, status } = useSession();
-    const [products, setProducts] = useState(initialProducts);
+    const [products, setProducts] = useState<Product[]>(initialProducts || []);
     const [loading, setLoading] = useState(false);
-
+    
     useEffect(() => {
-        if (status === "authenticated" && session?.accessToken) {
-            setLoading(true);
-            setLoading(false);
+        // Atualize o estado com os produtos iniciais quando eles chegarem
+        if (initialProducts?.length > 0) {
+            setProducts(initialProducts);
         }
-    }, [status, session]);
+    }, [initialProducts]);
+
+    // Log para debug
+    console.log('Products state:', products);
+    console.log('Initial products prop:', initialProducts);
 
     if (status === "loading") {
         return <LoadingSpinner />;
@@ -43,7 +58,9 @@ export function ProductsClient({ initialProducts }: ProductsClientProps) {
                         <CardTitle>Adicionar Novo Produto</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ProductForm />
+                        <ProductForm onProductAdded={(newProduct) => {
+                            setProducts(prev => [...prev, newProduct]);
+                        }} />
                     </CardContent>
                 </Card>
 
@@ -54,8 +71,15 @@ export function ProductsClient({ initialProducts }: ProductsClientProps) {
                     <CardContent>
                         {loading ? (
                             <LoadingSpinner />
-                        ) : products.length > 0 ? (
-                            <ProductList initialProducts={products} />
+                        ) : products && products.length > 0 ? (
+                            <ProductList products={products} onProductUpdated={(updatedProduct) => {
+                                setProducts(prev => prev.map(p => 
+                                    p.id === updatedProduct.id ? updatedProduct : p
+                                ));
+                            }} 
+                            onProductDeleted={(deletedId) => {
+                                setProducts(prev => prev.filter(p => p.id !== deletedId));
+                            }} />
                         ) : (
                             <div>Nenhum produto encontrado. Adicione um novo produto!</div>
                         )}

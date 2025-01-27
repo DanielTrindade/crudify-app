@@ -7,7 +7,7 @@ import {
   IsEmail,
 } from 'class-validator';
 
-import { IsEmailAlreadyExist } from 'src/decorators/UsersDecorators/IsEmailAlreadyExist/is-email-already-exist.decorator';
+import { IsEmailAlreadyExist } from '../../decorators/UsersDecorators/IsEmailAlreadyExist/is-email-already-exist.decorator';
 
 export class CreateUserDto {
   @IsString()

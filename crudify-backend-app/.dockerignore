@@ -1,1 +1,8 @@
 node_modules
+test
+.gitignore
+.git
+.prettierrc
+DockerFile
+README.md
+biome.json
