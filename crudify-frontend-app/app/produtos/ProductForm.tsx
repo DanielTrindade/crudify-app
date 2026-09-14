@@ -53,7 +53,6 @@ export function ProductForm() {
   });
 
   const createProduct = async (data: ProductFormValues) => {
-    console.log('createProduct:', data);
     try {
       if (!session?.accessToken) {
         throw new Error("Not authenticated");

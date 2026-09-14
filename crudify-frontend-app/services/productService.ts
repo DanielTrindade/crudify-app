@@ -16,7 +16,7 @@ class ProductService {
   private api: AxiosInstance;
 
   constructor(accessToken: string) {
-    const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://backend:3000"; 
+    const baseURL = process.env.NEXT_PUBLIC_API_URL; 
     this.api = axios.create({
       baseURL,
       headers: {

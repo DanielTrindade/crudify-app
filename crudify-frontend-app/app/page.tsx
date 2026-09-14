@@ -7,7 +7,7 @@ const App = () => {
 
   useEffect(() => {
     router.push("/login");
-  }, []);
+  }, [router]);
 
   return null; 
 };
